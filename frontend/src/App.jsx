@@ -12,7 +12,6 @@ import { Routes, Route, Navigate } from 'react-router-dom'
 import { UserContext } from './context/UserContext'
 import Cart from './views/Cart'
 import LoginPage from './views/LoginPage'
-import Tattoo from './views/Tattoo'
 import RegisterPage from './views/RegisterPage'
 import Profile from './views/Profile'
 import { Toaster } from 'react-hot-toast'
@@ -33,7 +32,6 @@ const {token} = useContext(UserContext)
           <Route path="/register" element={!token ? <RegisterPage /> : <Navigate to="/" />} />
           <Route path="/login" element={!token ? <LoginPage /> : <Navigate to="/" />} />
           <Route path="/cart" element={<Cart />} />
-          <Route path="/tattoo/:parametro" element={<Tattoo />} />
           <Route path='/profile' element={token ? <Profile /> : <Navigate to="/login" />} />
           <Route path="/about" element={<About />} />
           <Route path="/portfolio" element={<Projects />} />

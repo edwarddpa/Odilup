@@ -1,6 +1,5 @@
-import React, { use, useContext } from 'react'
+import { use, useContext } from 'react'
 import Hero from '../components/Hero'
-import Card from '../components/Card'
 import { GlobalContext } from '../context/GlobalContext'
 import CardTattoo from '../components/CardTattoo'
 
