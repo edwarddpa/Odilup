@@ -1,0 +1,50 @@
+[
+  {
+    "desc": "Tatuaje tribal con líneas curvas que representan fuerza y conexión con la naturaleza. Ideal para hombro o espalda.",
+    "id": "p001",
+    "img": "https://i.ibb.co/8DN765tc/1.png",
+    "categories": ["Tribal", "otro"],
+    "name": "Guerrero del Sol",
+    "price": 45
+  },
+  {
+    "desc": "Diseño simétrico en blanco y negro con patrones florales y geométricos. Perfecto para antebrazo o pecho.",
+    "id": "p002",
+    "img": "https://i.ibb.co/C3Vqdv5H/2.png",
+    "categories": ["Geometrico", "otro"],
+    "name": "Mandala Cósmico",
+    "price": 60
+  },
+  {
+    "desc": "Flor realista con efectos de fuego en los pétalos. Mezcla de color y sombreado para un acabado vibrante.",
+    "id": "p003",
+    "img": "https://i.ibb.co/hxrkN2m5/3.png",
+    "categories": ["Realismo", "otro"],
+    "name": "Rosa en Llamas",
+    "price": 59
+  },
+  {
+    "desc": "Ilustración de un samurái con fondo de luna llena y cerezos. Detalles finos en armadura y rostro.",
+    "id": "p004",
+    "img": "https://i.ibb.co/bj3TFZFY/4.png",
+    "categories": ["Oriental", "otro"],
+    "name": "Espíritu Samurai",
+    "price": 90
+  },
+  {
+    "desc": "Cráneo mecánico con engranajes, tubos y detalles metálicos. Estilo oscuro y futurista.",
+    "id": "p005",
+    "img": "https://i.ibb.co/cKppBqYm/5.png",
+    "categories": ["Fantasia", "otro"],
+    "name": "Cráneo Steampunk",
+    "price": 65
+  },
+  {
+    "desc": "Alas abiertas con plumas detalladas, ideal para espalda o clavícula. Representa fuerza y superación.",
+    "id": "p006",
+    "img": "https://i.ibb.co/Mx9nBf7n/6.png",
+    "categories": ["Simbolico", "otro"],
+    "name": "Alas de Libertad",
+    "price": 50
+  }
+]
