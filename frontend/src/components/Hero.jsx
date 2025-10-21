@@ -2,6 +2,11 @@ import React from 'react'
 import lunaodilup from '../assets/lunaodilup.png';
 
 const Hero = () => {
+  const handleStartClick = () => {
+    const el = document.getElementById('tattoo-gallery')
+    if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' })
+  }
+
   return (
 <div
   className="hero min-h-screen"
@@ -16,7 +21,7 @@ const Hero = () => {
       <p className="mb-5">
         Descubre tatuajes originales, reserva con artistas, o compra diseños digitales listos para entintar.
       </p>
-      <button className="btn btn-primary">Comenzar</button>
+      <button className="btn btn-primary" onClick={handleStartClick}>Comenzar</button>
     </div>
   </div>
 </div>

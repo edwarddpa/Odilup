@@ -14,7 +14,7 @@ const Home = () => {
         <Hero />
 
           <h2 className='text-center text-2xl font-bold my-4'>Galería de Tattoos</h2>
-        <div className='flex flex-wrap justify-center gap-4 p-4'>
+        <div id="tattoo-gallery" className='flex flex-wrap justify-center gap-4 p-4'>
 
         {Array.isArray(tattoos.results) && tattoos.results.map(results => (
           <CardTattoo

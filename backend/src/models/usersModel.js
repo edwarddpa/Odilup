@@ -28,19 +28,3 @@ export const findUserByEmailModel = async (email) => {
   }
   return user
 }
-
-export const updateFavoritesModel = async (id, favorites) => {
-  const favJson = JSON.stringify(favorites)
-  const SQLquery = {
-    text: 'UPDATE users SET favorites = $1::jsonb WHERE id = $2 RETURNING *',
-    values: [favJson, id]
-  }
-  const { rows } = await pool.query(SQLquery)
-  const user = rows[0]
-  if (!user) return null
-  if (user.favorites && typeof user.favorites === "string") {
-    try { user.favorites = JSON.parse(user.favorites) } catch {}
-  }
-  delete user.password
-  return user
-}

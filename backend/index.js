@@ -17,10 +17,17 @@ app.use(cors())
 app.use('/api/users', userRoutes)
 app.use('/api/tattoos', tattooRoutes)
 app.use('/api/books', bookRoutes)
-app.use("/api/checkouts", checkoutRoute)
-app.use("/api/favorites", favoriteRoutes)
+app.use("/api/checkouts", checkoutRoute);
+app.use("/api/favorites", favoriteRoutes);
 app.use((_, res) => {
-  res.status(404).json({ error: "Not Found" })
-})
+  res.status(404).json({ error: "Not Found" });
+});
+
+
+if (process.env.NODE_ENV !== 'test') {
+  app.listen(PORT, () => {
+    console.log(`Server running on http://localhost:${PORT}`)
+  })
+}
 
 export default app

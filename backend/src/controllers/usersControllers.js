@@ -1,4 +1,4 @@
-import { createUserModel, findUserByEmailModel, updateFavoritesModel } from "../models/usersModel.js"
+import { createUserModel, findUserByEmailModel} from "../models/usersModel.js"
 import jwt from "jsonwebtoken"
 import bcrypt from "bcrypt"
 import dotenv from "dotenv"
@@ -62,41 +62,8 @@ export const getUser = async (req, res) => {
         }
 }
 
-export const updateFavorites = async (req, res) => {
-  try {
-    console.log('PUT /api/users/favorites/:id - params:', req.params, 'body:', req.body, 'user from middleware:', req.user)
-
-    const { id } = req.params
-    const { favorites } = req.body
-
-    if (!id) return res.status(400).json({ message: 'Missing user id in params' })
-    if (!favorites) return res.status(400).json({ message: 'Missing favorites in body' })
-    if (!Array.isArray(favorites)) return res.status(400).json({ message: 'favorites must be an array' })
-
-    // opcional: validar que req.user corresponde al id (si auth middleware devuelve id)
-    if (req.user && typeof req.user === 'object' && req.user.id && req.user.id.toString() !== id.toString()) {
-      return res.status(403).json({ message: 'No autorizado para modificar estos favoritos' })
-    }
-
-    const updatedUser = await updateFavoritesModel(id, favorites)
-    if (!updatedUser) return res.status(404).json({ message: 'Usuario no encontrado' })
-
-    res.json({
-      message: "Favoritos actualizados exitosamente",
-      user: updatedUser
-    })
-  } catch (error) {
-    console.error("Error updating favorites:", error.stack || error)
-    res.status(500).json({
-      message: "Error al actualizar los favoritos",
-      error: error.message
-    })
-  }
-}
-
 export const me = async (req, res) => {
   try {
-    // si tu authMiddleware guarda el email en req.user (string)
     const email = typeof req.user === 'string' ? req.user : req.user?.email
     if (!email) return res.status(400).json({ error: "No user in token" })
     const user = await findUserByEmailModel(email)

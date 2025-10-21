@@ -1,6 +1,3 @@
-
-
-
 export const createCheckout = async (req, res) => {
     try{
         return res.status(200).json({

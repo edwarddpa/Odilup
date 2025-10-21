@@ -8,9 +8,6 @@ export const addFavorite = async (req, res) => {
     if (!userId) return res.status(401).json({ message: "No autorizado" })
     if (!tattooId) return res.status(400).json({ message: "tattooId requerido" })
 
-    // opcional: validar que usuario y tattoo existen
-    // const user = await findUserByIdModel(userId); if (!user) return res.status(404)...
-
     await addFavoriteModel(userId, tattooId)
     const favorites = await getFavoritesByUserModel(userId)
     return res.status(201).json({ message: "Favorito añadido", favorites })
