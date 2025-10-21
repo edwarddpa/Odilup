@@ -31,7 +31,7 @@ const {token} = useContext(UserContext)
           <Route path="/" element={<Home />} />
           <Route path="/register" element={!token ? <RegisterPage /> : <Navigate to="/" />} />
           <Route path="/login" element={!token ? <LoginPage /> : <Navigate to="/" />} />
-          <Route path="/cart" element={<Cart />} />
+          <Route path="/cart" element={token ? <Cart /> : <Navigate to="/login" />} />
           <Route path='/profile' element={token ? <Profile /> : <Navigate to="/login" />} />
           <Route path="/about" element={<About />} />
           <Route path="/portfolio" element={<Projects />} />

@@ -1,35 +1,12 @@
-import { use, useContext } from 'react'
+import { useContext } from 'react'
 import Hero from '../components/Hero'
 import { GlobalContext } from '../context/GlobalContext'
 import CardTattoo from '../components/CardTattoo'
 
 
-
 const Home = () => {
 
-    const { listaTattoos } = useContext(GlobalContext)
-
-  /*  const cards = [
-            {
-                title: "Construyendo un Legado",
-                description: "Conoce más sobre mi experiencia profesional, mis logros y los oficios que han marcado mi trayectoria.",
-                button: "Ver más",
-                img: "../public/Bio.png"
-            },
-            {
-                title: "Un viaje creativo e innovador",
-                description: "Descubre mis logros más significativos y los proyectos que han dejado huella en mi vida.",
-                button: "Proyectos",
-                img: "../public/project.png"
-            },
-            {
-                title: "Mi Presencia Digital",
-                description: "Conéctate conmigo a través de mis plataformas digitales y establece un canal directo de comunicación.",
-                button: "Contáctame",
-                img: "../public/contact.png"
-            }
-        ]
-*/
+    const { listaTattoos, tattoos } = useContext(GlobalContext)
 
   return (
     <div>
@@ -39,21 +16,36 @@ const Home = () => {
           <h2 className='text-center text-2xl font-bold my-4'>Galería de Tattoos</h2>
         <div className='flex flex-wrap justify-center gap-4 p-4'>
 
-        {listaTattoos.map((tattoo, index) => (
+        {Array.isArray(tattoos.results) && tattoos.results.map(results => (
           <CardTattoo
-          key={index}
-          id={tattoo.id}
-          desc={tattoo.desc}
-          name={tattoo.name}
-          price={tattoo.price}
-          categories={tattoo.categories}
-          img={tattoo.img}
-           />
-          ))}
-
-
-
+          key={results.id}
+          id={results.id}
+          desc={results.description}
+          name={results.name}
+          price={results.price}
+          categories={results.categories}
+          img={results.img}
+          />
+        ))}
         </div>
+
+          <h2 className='text-2xl font-bold my-4 ml-8'>Necesitas inspiración para tu próximo tattoo? mira las solicitudes de otros usuarios</h2>
+
+          <div className='flex flex-wrap justify-center gap-4 p-4'>
+            {Array.isArray(tattoos.inspiration) && tattoos.inspiration.map(results => (
+              <CardTattoo
+                key={results.id}
+                id={results.id}
+                desc={results.description}
+                name={results.name}
+                price={results.price}
+                categories={results.categories}
+                img={results.img}
+                hideActions={true}
+              />
+            ))}
+          </div>
+
     </div>
   )
 }

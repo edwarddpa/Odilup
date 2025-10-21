@@ -1,10 +1,33 @@
-import React, { useContext, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { UserContext } from '../context/UserContext'
 import { CartContext } from '../context/CartContext'
+import { GlobalContext } from '../context/GlobalContext'
+import toast from 'react-hot-toast'
 
 const Profile = () => {
-  const { user, handleLogout, handleAddSolicitud, handleSolicitudChange, solicitudes, solicitud, url, setUrl } = useContext(UserContext)
+  const { handleLogout, user, getFavoritos, deleteFavoritos} = useContext(UserContext)
   const { cart } = useContext(CartContext)
+  const { categories, price, imgUrl, description, title, setTitle, setDescription, setImgUrl, setPrice, setCategories, handleCreateTattoo, pending, fetchPending, handleApprove, getUserTattoos, myTattoos, setMyTattoos, deleteUserTattoo, handleDeleteTattoo} = useContext(GlobalContext)
+
+    useEffect(() => {
+      if (user?.id) {
+        getFavoritos()
+      }
+    }, [user?.id])
+
+    useEffect(() => {
+      if (user?.admin) fetchPending()
+    }, [user?.admin])
+
+    useEffect(() => {
+      const load = async () => {
+        if (!user?.id) return
+        const rows = await getUserTattoos()
+        setMyTattoos(rows)
+      }
+      load()
+    }, [user?.id])
+
 
 
   if (!user) {
@@ -27,19 +50,25 @@ const Profile = () => {
             alt="Avatar"
             className="w-24 h-24 rounded-full mb-4 border-4 border-primary object-cover"
           />
-          <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-1">{user.nombre}</h2>
+          <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-1">{user.username}</h2>
           <p className="text-gray-500 dark:text-gray-300 mb-4">{user.email}</p>
         </div>
+
+       
+
         <div className="divider">Favoritos</div>
         <div className="px-8 pb-4">
-          {!user.favoritos || user.favoritos.length === 0 ? (
+          {!user.favorites || user.favorites.length === 0 ? (
             <p className="text-gray-400 text-center">No tienes favoritos aún.</p>
           ) : (
             <ul className="space-y-2">
-              {user.favoritos.map((fav, idx) => (
-                <li key={idx} className="flex justify-between items-center">
-                  <span>{fav.name}</span>
-                  <span className="badge badge-primary">${fav.price}</span>
+              {user.favorites.map((fav) => (
+                <li key={fav.id} className="flex justify-between items-center">
+                  <div className="flex items-center gap-3">
+                    <span>{fav.name}</span>
+                  </div>
+                  <span className="badge badge-primary">${fav.price || " (por asignar)"}</span>
+                  <button className="btn btn-sm btn-error" onClick={() => deleteFavoritos(fav.id)}>Eliminar</button>
                 </li>
               ))}
             </ul>
@@ -47,12 +76,12 @@ const Profile = () => {
         </div>
 
         <div className="divider">Tatuajes Agendados</div>
-            <div className="px-8 pb-8">
-              {cart.length === 0 ? (
-              <p className="text-gray-400 text-center">No tienes tatuajes agendados.</p>
-              ) : (
-              <ul className="space-y-2">
-                {cart.map((tat, idx) => (
+        <div className="px-8 pb-8">
+          {cart.length === 0 ? (
+            <p className="text-gray-400 text-center">No tienes tatuajes agendados.</p>
+          ) : (
+            <ul className="space-y-2">
+              {cart.map((tat) => (
                 <li key={tat.id} className="flex justify-between items-center">
                   <div>
                     <span className="font-semibold">{tat.name}</span>
@@ -64,54 +93,93 @@ const Profile = () => {
             </ul>
           )}
         </div>
-        <div className="divider">Solicitudes Personalizadas</div>
-          
-          <div className="px-8 pb-8">
-            <h2 className='text-sm font-semibold mb-1'>Aquí podrás enviar tu idea para tu tattoo</h2>
-            <form onSubmit={handleAddSolicitud} className="flex flex-col gap-2">
-              <input type="text" placeholder="Nombre" className="input input-xs" />
-              <textarea
-                className="textarea textarea-bordered"
-                placeholder="Describe tu idea de tatuaje..."
-                value={solicitud}
-                onChange={handleSolicitudChange}
-                rows={3}
-              />
-              <label className="input validator">
-                <i class="fa-solid fa-link"></i>
-              <input
-                type="url"
-                required
-                placeholder="https:// (añade tu imagen referencial via URL)"
-                value={url}
-                onChange={e => setUrl(e.target.value)}
-                pattern="^(https?://)?([a-zA-Z0-9]([a-zA-Z0-9\-].*[a-zA-Z0-9])?\.)+[a-zA-Z].*$"
-                title="Must be valid URL"
-              />
-              </label>
-              <p className="validator-hint">Must be valid URL</p>
-                <button className="btn btn-primary self-end" type="submit">
-                  Enviar solicitud
-                </button>
-              </form>
-              {solicitudes.length > 0 && (
-              <ul className="mt-4 space-y-2">
-                {solicitudes.map((s, idx) => (
-                  <li key={idx} className="bg-base-200 rounded p-2 text-sm">
-                    <div className="font-semibold">{s.nombre}</div>
-                    <div>{s.descripcion}</div>
-                    {s.url && (
-                      <a href={s.url} target="_blank" rel="noopener noreferrer" className="text-blue-500 underline break-all">{s.url}</a>
-                    )}
-                  </li>
-                ))}
-              </ul>
-            )}
-          </div>
-          </div>
-      </section> 
+
+           <div className="divider">Solicitudes personalizadas (Crear tattoo)</div>
+        <div className="px-8 pb-4">
+          <form onSubmit={handleCreateTattoo} className="flex flex-col gap-2">
+            <input value={title} onChange={e => setTitle(e.target.value)} type="text" placeholder="Nombre del tattoo" className="input input-bordered" />
+            <textarea value={description} onChange={e => setDescription(e.target.value)} className="textarea textarea-bordered" placeholder="Descripción..." rows={3} />
+            <input value={imgUrl} onChange={e => setImgUrl(e.target.value)} type="url" placeholder="URL de la imagen (opcional)" className="input input-bordered" />
+            <input value={categories} onChange={e => setCategories(e.target.value)} type="text" placeholder="Categorías (separadas por coma)" className="input input-bordered" />
+            <div className="flex justify-end">
+              <button className="btn btn-primary my-2" type="submit">Enviar solicitud / Crear tattoo</button>
+            </div>
+          </form>
+        </div>
+
+        {user?.admin && (
+      <>
+      <div className="divider">Panel Admin - Solicitudes</div>
+      <div className="px-8 pb-4">
+        {pending.length === 0 ? <p>No hay solicitudes pendientes.</p> :
+          <ul className="space-y-3">
+            {pending.map(t => {
+              const imgSrc = t.design_url || t.img || "https://placehold.co/400";
+              return (
+                <li key={t.id} className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 bg-base-100 p-3 rounded shadow-sm">
+                  <div className="flex items-start gap-4">
+                    <img src={imgSrc} alt={t.name} className="w-28 h-20 object-cover rounded" />
+                    <div>
+                      <div className="font-semibold">{t.name}</div>
+                      <div className="text-sm text-gray-500">{t.description}</div>
+                      {t.categories?.length > 0 && <div className="text-xs text-gray-400 mt-1">{t.categories.join(", ")}</div>}
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-2 mt-2 md:mt-0">
+                    <input
+                      type="number"
+                      step="0.01"
+                      min="0"
+                      placeholder="Precio (ej. 45.00)"
+                      value={price[t.id] ?? ""}
+                      onChange={e => setPrice(prev => ({ ...prev, [t.id]: e.target.value }))}
+                      className="input input-sm w-32"
+                    />
+                    <button
+                      className="btn btn-sm btn-success"
+                      onClick={() => {
+                        const p = price[t.id]
+                        if (!p) return alert("Introduce un precio antes de aprobar")
+                        handleApprove(t.id, Number(p))
+                      }}
+                    >
+                      Aprobar y Pautar precio
+                    </button>
+                  </div>
+                </li>
+              )
+            })}
+          </ul>
+        }
+      </div>
+    </>
+    )}
+
+      <div className="divider">Mis solicitudes / Mis tattoos</div>
+      <div className="px-8 pb-4">
+        {myTattoos.length === 0 ? <p>No tienes solicitudes.</p> :
+          <ul>
+            {myTattoos.map(t => (
+              <li key={t.id} className="flex justify-between items-center">
+                 <div>
+                   <div className="font-semibold">{t.name} {t.approved ? <span className="text-sm text-green-500"> (Aprobado)</span> : <span className="text-sm text-yellow-500"> (Pendiente)</span>}</div>
+                   <div className="text-sm text-gray-500">{t.description}</div>
+                 </div>
+                 <div className="flex items-center gap-2">
+                   {t.approved ? <span className="badge badge-primary">${t.price}</span> : <span className="badge badge-ghost">Precio por asignar</span>}
+                   <button className="btn btn-sm btn-error" onClick={() => handleDeleteTattoo(t.id)}>Eliminar</button>
+                 </div>
+              </li>
+            ))}
+          </ul>
+        }
+      </div>
+
+      </div>
+
+      
+    </section>
   )
 }
-          
 
 export default Profile
